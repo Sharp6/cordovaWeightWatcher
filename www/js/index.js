@@ -34,6 +34,22 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+
+        var CwwVM = function() {
+            var self = this;
+            
+            self.weight = ko.observable();
+            self.note = ko.observable();
+
+            self.submitForm = function() {
+                
+                console.log(self.weight(), self.note());
+            }
+        }
+
+        var vm = new CwwVM();
+        ko.applyBindings(vm);
+
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

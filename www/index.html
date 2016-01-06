@@ -42,7 +42,14 @@
                 <p class="event listening">Connecting to Device</p>
                 <p class="event received">Device is Ready</p>
             </div>
+            <div id="cwwDiv">
+                <input type="text" id="weightInput" data-bind="value:weight" /><br/>
+                <textarea id="note" data-bind="value:note"></textarea><br />
+                <button id="send" data-bind="click:submitForm">Send</button>
+            </div>
         </div>
+        <script type="text/javascript" src="libraries/jquery.min.js"></script>
+        <script type="text/javascript" src="libraries/knockout.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </body>
