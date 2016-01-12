@@ -64,6 +64,9 @@ var app = {
 
             self.observations = ko.observableArray([]);
 
+            self.newGoalWeight = ko.observable();
+            self.newGoalDate = ko.observable();
+
             self.submitForm = function() {
                 myApp.showProgressbar(progressContainer);
                 var data = {
@@ -88,10 +91,14 @@ var app = {
                 });
             }
 
+            self.updateGoal = function() {
+                console.log("Clickediclick:" + self.newGoalDate() + ", " + self.newGoalWeight());
+            }
+
             self.fetchObservations = function() {
                 $.ajax({
                     type: "GET",
-                    url: "http://127.0.0.1:7071/api/observations",
+                    url: "http://192.168.1.106:7071/api/observations",
                     success: function(observations) {
                         var mappedObservations = observations.map(function(observation) {
                             return {
@@ -114,6 +121,10 @@ var app = {
             self.applyF7Bindings = function() {
                 ptrContent.on('refresh', function(e) {
                     self.fetchObservations();
+                });
+
+                var goalCalendar = myApp.calendar({
+                    input: '#goalCalendar',
                 });
             }
 
