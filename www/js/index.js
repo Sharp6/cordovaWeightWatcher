@@ -53,11 +53,16 @@ var app = {
 
         var progressContainer = $$('#submitProcess');
 
+        var ptrContent = $$('.pull-to-refresh-content');
+       
+
         var CwwVM = function() {
             var self = this;
             
             self.weight = ko.observable();
             self.note = ko.observable();
+
+            self.observations = ko.observableArray([]);
 
             self.submitForm = function() {
                 myApp.showProgressbar(progressContainer);
@@ -82,9 +87,44 @@ var app = {
                     }
                 });
             }
+
+            self.fetchObservations = function() {
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:7071/api/observations",
+                    success: function(observations) {
+                        var mappedObservations = observations.map(function(observation) {
+                            return {
+                                weight: observation.weight,
+                                date: moment(observation.observedDate).format("MMM Do")
+                            }
+                        });
+
+                        self.observations(mappedObservations);
+                        console.log(mappedObservations);
+                        myApp.pullToRefreshDone();
+
+                    },
+                    error: function(err,status) {
+                        console.log(err);
+                    }
+                });
+            }
+
+            self.applyF7Bindings = function() {
+                ptrContent.on('refresh', function(e) {
+                    self.fetchObservations();
+                });
+            }
+
+            self.init = function() {
+                self.applyF7Bindings();
+                self.fetchObservations();
+            }
         }
 
         var vm = new CwwVM();
+        vm.init();
         ko.applyBindings(vm);
 
     },
