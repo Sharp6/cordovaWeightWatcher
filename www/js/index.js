@@ -35,6 +35,24 @@ var app = {
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
 
+        // Initialize your app
+        var myApp = new Framework7({
+            animateNavBackIcon:true
+        });
+
+        // Export selectors engine
+        var $$ = Dom7;
+
+        // Add main View
+        var mainView = myApp.addView('.view-main', {
+            // Enable dynamic Navbar
+            dynamicNavbar: true,
+            // Enable Dom Cache so we can use all inline pages
+            domCache: true
+        });
+
+        var progressContainer = $$('#submitProcess');
+
         var CwwVM = function() {
             var self = this;
             
@@ -42,8 +60,27 @@ var app = {
             self.note = ko.observable();
 
             self.submitForm = function() {
-                
-                console.log(self.weight(), self.note());
+                myApp.showProgressbar(progressContainer);
+                var data = {
+                    weight: self.weight(),
+                    note: self.note(),
+                    nonStandard: myApp.formToJSON('#wwForm').nonStandard[0]
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "http://192.168.1.106:7071/api/observations",
+                    data: data,
+                    success: function(response) {
+                        myApp.hideProgressbar(progressContainer);
+                        $('#submitStatus p').html('succes');
+                        $('#submitStatus').show(500);
+                    },
+                    error: function(err,status) {
+                        myApp.hideProgressbar(progressContainer);
+                        $('#submitStatus p').html(err.responseText);
+                        $('#submitStatus').show(500);
+                    }
+                });
             }
         }
 
